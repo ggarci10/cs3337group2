@@ -20,6 +20,7 @@
             <img src="{% static 'logo.jpg'%}" height="38">
         </div>
         <span class="text-bg-dark p-3" style="float: right;">
+
             {% if user.is_authenticated %}
             {{ user.username }}
             <a href="{% url 'logout' %}?next=/">Logout  </a>
@@ -28,6 +29,7 @@
             <a href="{% url 'login' %}?next=/">login</a>
             {% endif %}
         </span>
+
 
 
         <div >
@@ -46,6 +48,12 @@
                 </li>
                 {% endblock sidenav %}
             </ul>
+            <form class="d=flex" method=POST action="/search_items">
+                {% csrf_token %}
+               <input class='nav flex-column' type = 'search' placeholder="search" name="searched">
+    <button class ='btn btn-outline-secondary' type="submit">search</button>
+
+                </form>
         </nav>
     </aside>
     <section  id="main">

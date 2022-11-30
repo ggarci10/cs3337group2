@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+    search items
+{% endblock title %}
+
+{% block sidenav %}
+    {% for item in item_list %}
+    <li>
+        <a href="{{item.link}}">{{item.item}} </a>
+    </li>
+    {% endfor %}
+{% endblock sidenav %}
+
+{% block content %}
+<h1 align="center"> Results </h1>
+
+
+
+{% if searched %}
+{% for book in books %}
+<p class="card-text">
+      <a href="book_detail/{{ book.id }}" class="stretched-link text-primary" style="position: relative;">  {{ book.name }}</a>
+    </p>
+{% endfor %}
+
+{% else %}
+<h1> you forgot to search</h1>
+{% endif %}
+
+{% endblock content %}

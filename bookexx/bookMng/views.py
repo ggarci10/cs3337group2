@@ -21,6 +21,21 @@ def index(request):
                   })
 
 
+def search_items(request):
+    if request.method == "POST":
+        searched = request.POST['searched']
+        books = Book.objects.filter(name__contains=searched)
+
+        return render(request,
+                      'bookMng/search_items.html',
+                      {'searched' : searched,
+                       'books': books}
+                      )
+    else:
+        return render(request,
+                      'bookMng/search_items.html', {})
+
+
 def postbook(request):
     submitted = False
     if request.method == 'POST':
@@ -85,9 +100,6 @@ def book_detail(request, book_id):
                       'book': book,
                       'is_favorite': is_favorite
                   })
-
-
-
 
 
 def favorites(request):
