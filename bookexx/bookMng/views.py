@@ -87,13 +87,32 @@ def book_detail(request, book_id):
                   })
 
 
+
+
+
 def favorites(request):
-    books = Book.objects.filter(username=request.user)
+    books = Book.objects.filter(favorite=request.user)
     return render(request,
                   'bookMng/favorites.html',
                   {
                       'item_list': MainMenu.objects.all(),
-                      'favorites': books.favorite.all(),
+                      'books': books,
+                  })
+
+
+def book_favorite(request, book_id):
+    book = Book.objects.get(id=book_id)
+    if book.favorite.filter(id=request.user.id).exists():
+        is_favorite = True
+        book.favorite.clear()
+    else:
+        book.favorite.add(request.user.id)
+        is_favorite = False
+    return render(request,
+                  'bookMng/book_favorite.html',
+                  {
+                      'item_list': MainMenu.objects.all(),
+                      'is_favorite': is_favorite
                   })
 
 
@@ -116,10 +135,3 @@ class Register(CreateView):
 def form_valid(self, form):
     form.save()
     return HttpResponseRedirect(self.success_url)
-
-
-def add_product(request, pk):
-    product = get_object_or_404(Book, pk=pk)
-    if request.user not in product.favourite.all():
-        product.favourite.add(request.user)
-    return HttpResponseRedirect('book_detail/book_id')

@@ -16,5 +16,16 @@
 <h1 align="center"> 2222 </h1>
 
 
+ {% for book in books %}
+   <div class="card" style="width: 18rem;">
+  <div class="card-body">
+
+	 <p class="card-text">
+      <a href="http://127.0.0.1:8000/book_detail/{{ book.id }}" class="stretched-link text-primary" style="position: relative;">  {{ book.name }}</a>
+    </p>
+
+  </div>
+</div>
+{% endfor %}
 
 {% endblock content %}

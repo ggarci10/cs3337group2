@@ -30,9 +30,9 @@
 ...
   </div>
  {% if is_favorite %}
-    <a href="{url 'book:book_favorite' id=book.id}">    <p>hey look at me </p>   </a>
+    <a class="btn btn-outline-danger"  href="http://127.0.0.1:8000/book_favorite/{{ book.id }}">    <p>unfavorite </p>   </a>
   {% else %}
-    <a href="{url 'book:book_favorite' id=book.id}">    <p>unlucky</p> </a>
+    <a class="btn btn-outline-danger"  href="http://127.0.0.1:8000/book_favorite/{{ book.id }}">    <p>favorite</p> </a>
      {% endif %}
 </div>
 
