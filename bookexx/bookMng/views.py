@@ -74,6 +74,12 @@ def displaybooks(request):
                       'books': books
                   })
 
+def aboutus(request):
+    return render(request,
+                  'bookMng/aboutus.html',
+                  {
+                      'item_list': MainMenu.objects.all(),
+                  })
 
 def mybooks(request):
     books = Book.objects.filter(username=request.user)
