@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Display Book Page
+{% endblock title %}
+
+{% block sidenav %}
+    {% for item in item_list %}
+    <li>
+        <a href="{{item.link}}">{{item.item}} </a>
+    </li>
+    {% endfor %}
+{% endblock sidenav %}
+
+{% block content %}
+<h1 align="center"> Display Books Page </h1>
+
+    {% for book in books %}
+ <div class="card" style="width: 18rem;">
+  <div class="card-body">
+	 <p class="card-text">
+      <a href="book_detail/{{ book.id }}" class="stretched-link text-primary" style="position: relative;">  {{ book.name }}</a>
+
+
+    </p>
+  </div>
+</div>
+
+    {% endfor %}
+
+{% endblock content %}
+

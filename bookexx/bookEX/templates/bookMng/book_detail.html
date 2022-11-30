@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+{% load ratings %}
+    book detail
+{% endblock title %}
+<link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+<script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+{% block sidenav %}
+    {% for item in item_list %}
+    <li>
+        <a href="{{item.link}}">{{item.item}} </a>
+    </li>
+    {% endfor %}
+{% endblock sidenav %}
+
+{% block content %}
+
+<div class="card" style="width: 18rem;">
+  <img src="{% static book.pic_path %}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title"> Books detail</h5>
+    <p class="card-text"> {{book.name}}</p>
+    <p class="card-text">
+      {{book.username}}
+    </p>
+ <p class="card-text"> </p>
+...
+      <p class="card-text"> {% ratings book %}</p>
+...
+  </div>
+ {% if is_favorite %}
+    <a href="{url 'book:book_favorite' id=book.id}">    <p>hey look at me </p>   </a>
+  {% else %}
+    <a href="{url 'book:book_favorite' id=book.id}">    <p>unlucky</p> </a>
+     {% endif %}
+</div>
+
+
+
+
+
+
+{% endblock content %}
+
