@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}
-{% load ratings %}
     book detail
 {% endblock title %}
 <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
@@ -25,10 +24,7 @@
       {{book.username}}
     </p>
  <p class="card-text"> </p>
-...
-      <p class="card-text"> {% ratings book %}</p>
-...
-  </div>
+
  {% if is_favorite %}
     <a class="btn btn-outline-danger"  href="http://127.0.0.1:8000/book_favorite/{{ book.id }}">    <p>unfavorite </p>   </a>
   {% else %}

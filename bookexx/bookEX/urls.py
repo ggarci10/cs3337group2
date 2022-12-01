@@ -33,6 +33,5 @@ urlpatterns = [
     path('register', Register.as_view(), name='register'),
     path('',include('django.contrib.auth.urls')),
     path('', include('bookMng.urls')),
-    path('ratings/', include('star_ratings.urls', namespace='ratings')),
 
 ]
