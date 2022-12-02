@@ -21,5 +21,11 @@ class Book(models.Model):
     username = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     favorite = models.ManyToManyField(User, related_name='favorite', blank=True)
 
+
+class Rate(models.Model):
+    rating = models.FloatField()
+    product = models.ForeignKey(Book, blank=True, null=True, on_delete=models.CASCADE)
+    username = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+
     def __str__(self):
         return str(self.id)

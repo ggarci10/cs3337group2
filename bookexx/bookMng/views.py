@@ -1,12 +1,16 @@
+from statistics import mean
+
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
 from .models import MainMenu
-from .forms import BookForm
+from .forms import BookForm, ReviewForm
 from django.http import HttpResponseRedirect
 from .models import Book
+from .models import Rate
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
@@ -28,7 +32,7 @@ def search_items(request):
 
         return render(request,
                       'bookMng/search_items.html',
-                      {'searched' : searched,
+                      {'searched': searched,
                        'books': books}
                       )
     else:
@@ -74,6 +78,7 @@ def displaybooks(request):
                       'books': books
                   })
 
+
 def aboutus(request):
     return render(request,
                   'bookMng/aboutus.html',
@@ -81,41 +86,84 @@ def aboutus(request):
                       'item_list': MainMenu.objects.all(),
                   })
 
+
 def mybooks(request):
-    books = Book.objects.filter(username=request.user)
-    for b in books:
-        b.pic_path = b.picture.url[14:]
-    return render(request,
-                  'bookMng/mybooks.html',
-                  {
-                      'item_list': MainMenu.objects.all(),
-                      'books': books,
-                  })
+    if request.user.is_authenticated:
+        books = Book.objects.filter(username=request.user)
+        for b in books:
+            b.pic_path = b.picture.url[14:]
+        return render(request,
+                      'bookMng/mybooks.html',
+                      {
+                          'item_list': MainMenu.objects.all(),
+                          'books': books,
+                      })
+    else:
+        return render(request,
+                      'bookMng/mybooks.html',
+                      {
+                          'item_list': MainMenu.objects.all(),
+                      })
+
 
 
 def book_detail(request, book_id):
     book = Book.objects.get(id=book_id)
     book.pic_path = book.picture.url[14:]
     is_favorite = False
-    if book.favorite.filter(id=request.user.id).exists():
-        is_favorite = True
-    return render(request,
-                  'bookMng/book_detail.html',
-                  {
-                      'item_list': MainMenu.objects.all(),
-                      'book': book,
-                      'is_favorite': is_favorite
-                  })
+    is_rate = False
+    if request.user.is_authenticated:
+        if book.favorite.filter(id=request.user.id).exists():
+            is_favorite = True
+        if Rate.objects.filter(username=request.user, product__id=book_id).exists():
+            is_rate = True
+            avg = Rate.objects.filter(product__id=book_id).aggregate(Avg('rating'))
+            return render(request,
+                          'bookMng/book_detail.html',
+                          {
+                              'item_list': MainMenu.objects.all(),
+                              'book': book,
+                              'is_favorite': is_favorite,
+                              'rate': Rate.objects.get(username=request.user, product__id=book_id),
+                              'is_rate': is_rate,
+                              'avg': avg
+                          })
+        else:
+            return render(request,
+                          'bookMng/book_detail.html',
+                          {
+                              'item_list': MainMenu.objects.all(),
+                              'book': book,
+                              'is_favorite': is_favorite,
+                              'is_rate': is_rate
+                          })
+
+    else:
+        return render(request,
+                      'bookMng/book_detail.html',
+                      {
+                          'item_list': MainMenu.objects.all(),
+                          'book': book,
+
+                      })
 
 
 def favorites(request):
-    books = Book.objects.filter(favorite=request.user)
-    return render(request,
-                  'bookMng/favorites.html',
-                  {
-                      'item_list': MainMenu.objects.all(),
-                      'books': books,
-                  })
+    if request.user.is_authenticated:
+        books = Book.objects.filter(favorite=request.user)
+        return render(request,
+                      'bookMng/favorites.html',
+                      {
+                          'item_list': MainMenu.objects.all(),
+                          'books': books,
+                      })
+    else:
+        return render(request,
+                      'bookMng/favorites.html',
+                      {
+                          'item_list': MainMenu.objects.all(),
+                      })
+
 
 
 def book_favorite(request, book_id):
@@ -153,3 +201,42 @@ class Register(CreateView):
 def form_valid(self, form):
     form.save()
     return HttpResponseRedirect(self.success_url)
+
+
+def rate(request, book_id):
+    url = request.META.get('HTTP_REFERER')
+    book = Book.objects.get(id=book_id)
+    book.pic_path = book.picture.url[14:]
+    is_rate = False
+    if Rate.objects.filter(username=request.user, product__id=book_id).exists():
+        is_rate = True
+    if request.method == "POST":
+        try:
+            review = Rate.objects.get(username=request.user, product__id=book_id)
+            form = ReviewForm(request.POST, instance=review)
+            form.save()
+            return render(request,
+                          'bookMng/rate.html',
+                          {
+                              'item_list': MainMenu.objects.all(),
+                              'book': book,
+                              'rate': Rate.objects.get(username=request.user, product__id=book_id),
+                              'is_rate': is_rate
+                          })
+        except Rate.DoesNotExist:
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                data = Rate()
+                data.rating = form.cleaned_data['rating']
+                data.product_id = book_id
+                data.username_id = request.user.id
+                data.save()
+                review = Rate.objects.get(username=request.user, product__id=book_id)
+                return render(request,
+                              'bookMng/rate.html',
+                              {
+                                  'item_list': MainMenu.objects.all(),
+                                  'book': book,
+                                  'rate': Rate.objects.get(username=request.user, product__id=book_id),
+                                  'is_rate': is_rate
+                              })

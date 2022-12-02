@@ -11,13 +11,10 @@
     </li>
     {% endfor %}
 {% endblock sidenav %}
-{% if user.is_authenticated %}
-{% block content %}
-<h1 align="center">  Books added to favorites </h1>
 
-      {% else %}
-you are not logged in to see ratings
-            <a href="{% url 'login' %}?next=/">login</a>
-            {% endif %}
+{% block content %}
+<h1 align="center">  rating has been added </h1>
+
+
 
 {% endblock content %}

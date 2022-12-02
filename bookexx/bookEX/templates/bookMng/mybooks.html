@@ -14,6 +14,8 @@
 
 {% block content %}
 <h1 align="center"> My Books Page </h1>
+
+{% if user.is_authenticated %}
     {% for book in books %}
     <div class="card" style="width: 18rem;">
   <div class="card-body">
@@ -30,5 +32,8 @@
   </div>
 </div>
     {% endfor %}
-
+      {% else %}
+you are not logged in to see your books
+            <a href="{% url 'login' %}?next=/">login</a>
+            {% endif %}
 {% endblock content %}

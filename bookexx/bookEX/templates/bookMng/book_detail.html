@@ -15,6 +15,7 @@
 
 {% block content %}
 
+
 <div class="card" style="width: 18rem;">
   <img src="{% static book.pic_path %}" class="card-img-top" alt="...">
   <div class="card-body">
@@ -25,12 +26,56 @@
     </p>
  <p class="card-text"> </p>
 
+{% if user.is_authenticated %}
+
+    <h5 class="card-title"> Rating</h5>
+ {% if is_rate %}
+    <p> {{rate.rating}}</p>
+ <p>{{avg}}</p>
+      {% else %}
+      <p>does not exist</p>
+       <p>{{avg}}</p>
+ {% endif %}
+ <p class="card-text">
+   <form action="{% url 'rate' book.id %}" method="POST">
+       {% csrf_token %}
+       <h5> Rate</h5>
+       <div class="rate">
+           Rate from 1-5
+            <input type="radio" name="rating" id="rating1" value="1" required/>
+           <input type="radio" name="rating" id="rating2" value="2" required/>
+           <input type="radio" name="rating" id="rating3" value="3" required/>
+           <input type="radio" name="rating" id="rating4" value="4" required/>
+           <input type="radio" name="rating" id="rating5" value="5" required/>
+
+
+
+
+
+           <br>
+        <input type="submit" value="Submit review" class="btn btn-primary">
+       </div>
+           <div>
  {% if is_favorite %}
     <a class="btn btn-outline-danger"  href="http://127.0.0.1:8000/book_favorite/{{ book.id }}">    <p>unfavorite </p>   </a>
   {% else %}
-    <a class="btn btn-outline-danger"  href="http://127.0.0.1:8000/book_favorite/{{ book.id }}">    <p>favorite</p> </a>
+    <a class="btn btn-primary"  href="http://127.0.0.1:8000/book_favorite/{{ book.id }}">    <p>favorite</p> </a>
      {% endif %}
-</div>
+      </div>
+
+   </form>
+
+
+
+
+            {% else %}
+you are not logged in to see ratings
+            <a href="{% url 'login' %}?next=/">login</a>
+            {% endif %}
+
+
+
+
 
 
 
