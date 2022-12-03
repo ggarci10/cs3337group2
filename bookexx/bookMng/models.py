@@ -29,3 +29,12 @@ class Rate(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+
+class Comment(models.Model):
+    comment = models.TextField(max_length=500, blank=True)
+    product = models.ForeignKey(Book, blank=True, null=True, on_delete=models.CASCADE)
+    username = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.id)

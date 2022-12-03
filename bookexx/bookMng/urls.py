@@ -15,5 +15,5 @@ urlpatterns = [
     path('search_items', views.search_items, name='search_items'),
     path('aboutus', views.aboutus, name='aboutus'),
     path('rate/<int:book_id>', views.rate, name='rate'),
-
+    path('comment/<int:book_id>', views.comment, name='comment'),
 ]

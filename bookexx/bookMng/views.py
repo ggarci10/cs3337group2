@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
-from .models import MainMenu
-from .forms import BookForm, ReviewForm
+from .models import MainMenu, Comment
+from .forms import BookForm, ReviewForm, CommentForm
 from django.http import HttpResponseRedirect
 from .models import Book
 from .models import Rate
@@ -111,21 +111,27 @@ def book_detail(request, book_id):
     book.pic_path = book.picture.url[14:]
     is_favorite = False
     is_rate = False
+    is_comment = False
     if request.user.is_authenticated:
+        if Comment.objects.filter(username=request.user, product__id=book_id).exists():
+            is_comment = True
         if book.favorite.filter(id=request.user.id).exists():
             is_favorite = True
         if Rate.objects.filter(username=request.user, product__id=book_id).exists():
             is_rate = True
             avg = Rate.objects.filter(product__id=book_id).aggregate(Avg('rating'))
+            comments = Comment.objects.filter(product__id=book_id)
             return render(request,
                           'bookMng/book_detail.html',
                           {
                               'item_list': MainMenu.objects.all(),
                               'book': book,
                               'is_favorite': is_favorite,
+                              'is_comment': is_comment,
                               'rate': Rate.objects.get(username=request.user, product__id=book_id),
                               'is_rate': is_rate,
-                              'avg': avg
+                              'avg': avg,
+                              'comments': comments
                           })
         else:
             return render(request,
@@ -134,7 +140,8 @@ def book_detail(request, book_id):
                               'item_list': MainMenu.objects.all(),
                               'book': book,
                               'is_favorite': is_favorite,
-                              'is_rate': is_rate
+                              'is_rate': is_rate,
+                              'is_comment': is_comment
                           })
 
     else:
@@ -228,12 +235,42 @@ def rate(request, book_id):
                 data.product_id = book_id
                 data.username_id = request.user.id
                 data.save()
-                review = Rate.objects.get(username=request.user, product__id=book_id)
                 return render(request,
-                              'bookMng/rate.html',
+                              'bookMng/book_favorite.html',
                               {
                                   'item_list': MainMenu.objects.all(),
-                                  'book': book,
-                                  'rate': Rate.objects.get(username=request.user, product__id=book_id),
-                                  'is_rate': is_rate
+                              })
+
+
+def comment(request, book_id):
+    book = Book.objects.get(id=book_id)
+    book.pic_path = book.picture.url[14:]
+    is_comment = False
+    if Comment.objects.filter(username=request.user, product__id=book_id).exists():
+        is_comment = True
+    if request.method == "POST":
+        try:
+            c = Comment.objects.get(username=request.user, product__id=book_id)
+            form = CommentForm(request.POST, instance=c)
+            form.save()
+            return render(request,
+                          'bookMng/comment.html',
+                          {
+                              'item_list': MainMenu.objects.all(),
+                              'book': book,
+                              'rate': Comment.objects.get(username=request.user, product__id=book_id),
+                              'is_comment': is_comment
+                          })
+        except Comment.DoesNotExist:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                data = Comment()
+                data.comment = form.cleaned_data['comment']
+                data.product_id = book_id
+                data.username_id = request.user.id
+                data.save()
+                return render(request,
+                              'bookMng/comment.html',
+                              {
+                                  'item_list': MainMenu.objects.all(),
                               })

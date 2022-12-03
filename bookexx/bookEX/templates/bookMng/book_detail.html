@@ -67,7 +67,6 @@
 
 
 
-
             {% else %}
 you are not logged in to see ratings
             <a href="{% url 'login' %}?next=/">login</a>
@@ -75,9 +74,25 @@ you are not logged in to see ratings
 
 
 
+ <form  action="{% url 'comment' book.id %}" method="POST" novalidate>
+        <input type="text" name="comment" id="comment" placeholder="enter text here" required>
+
+                <input class="btn btn-primary" type="submit" value="Submit">
 
 
 
+     {% csrf_token %}
+  </form>
+
+    <h5 class="card-title"> comment</h5>
+ {% if is_comment %}
+    {% for comment in comments %}
+      <p>  {{comment.comment}}  by {{comment.username}} </p>
+    {% endfor %}
+
+      {% else %}
+      <p>does not exist</p>
+ {% endif %}
 
 
 
