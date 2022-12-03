@@ -113,7 +113,7 @@ def book_detail(request, book_id):
     is_rate = False
     is_comment = False
     if request.user.is_authenticated:
-        if Comment.objects.filter(username=request.user, product__id=book_id).exists():
+        if Comment.objects.filter(product__id=book_id).exists():
             is_comment = True
         if book.favorite.filter(id=request.user.id).exists():
             is_favorite = True
@@ -134,6 +134,7 @@ def book_detail(request, book_id):
                               'comments': comments
                           })
         else:
+            comments = Comment.objects.filter(product__id=book_id)
             return render(request,
                           'bookMng/book_detail.html',
                           {
@@ -141,17 +142,22 @@ def book_detail(request, book_id):
                               'book': book,
                               'is_favorite': is_favorite,
                               'is_rate': is_rate,
-                              'is_comment': is_comment
+                              'comments': comments
                           })
 
     else:
+        comments = Comment.objects.filter(product__id=book_id)
+        avg = Rate.objects.filter(product__id=book_id).aggregate(Avg('rating'))
         return render(request,
                       'bookMng/book_detail.html',
                       {
+                          'is_rate': is_rate,
                           'item_list': MainMenu.objects.all(),
                           'book': book,
-
+                          'comments': comments,
+                          'avg':avg
                       })
+
 
 
 def favorites(request):

@@ -28,14 +28,7 @@
 
 {% if user.is_authenticated %}
 
-    <h5 class="card-title"> Rating</h5>
- {% if is_rate %}
-    <p> {{rate.rating}}</p>
- <p>{{avg}}</p>
-      {% else %}
-      <p>does not exist</p>
-       <p>{{avg}}</p>
- {% endif %}
+
  <p class="card-text">
    <form action="{% url 'rate' book.id %}" method="POST">
        {% csrf_token %}
@@ -53,46 +46,50 @@
 
 
            <br>
-        <input type="submit" value="Submit review" class="btn btn-primary">
+        <input type="submit" style="width:200px;" value="Submit review" class="btn btn-primary">
        </div>
            <div>
  {% if is_favorite %}
-    <a class="btn btn-outline-danger"  href="http://127.0.0.1:8000/book_favorite/{{ book.id }}">    <p>unfavorite </p>   </a>
+    <a class="btn btn-outline-danger" style="width:200px;"  href="http://127.0.0.1:8000/book_favorite/{{ book.id }}"> unfavorite    </a>
   {% else %}
-    <a class="btn btn-primary"  href="http://127.0.0.1:8000/book_favorite/{{ book.id }}">    <p>favorite</p> </a>
+    <a class="btn btn-primary" style="width:200px;"  href="http://127.0.0.1:8000/book_favorite/{{ book.id }}">   favorites   </a>
      {% endif %}
       </div>
 
    </form>
-
-
-
-            {% else %}
-you are not logged in to see ratings
-            <a href="{% url 'login' %}?next=/">login</a>
-            {% endif %}
-
-
-
  <form  action="{% url 'comment' book.id %}" method="POST" novalidate>
-        <input type="text" name="comment" id="comment" placeholder="enter text here" required>
+     <textarea name="comment" id="comment" style="width:200px; height:100"  placeholder="enter text here" required></textarea>
 
-                <input class="btn btn-primary" type="submit" value="Submit">
+                <input class="btn btn-primary" style="width:200px" type="submit" value="Submit">
 
 
 
      {% csrf_token %}
   </form>
 
-    <h5 class="card-title"> comment</h5>
- {% if is_comment %}
+
+            {% else %}
+you are not logged in to see ratings or to comment
+            <a href="{% url 'login' %}?next=/">login to do these features</a>
+            {% endif %}
+
+
+
+
+   <h5 class="card-title"> Rating</h5>
+ {% if is_rate %}
+    <p> {{rate.rating}}</p>
+ <p>{{avg}}</p>
+      {% else %}
+      <p></p>
+       <p>{{avg}}</p>
+ {% endif %}
+    <h5 class="card-title"> comments</h5>
     {% for comment in comments %}
       <p>  {{comment.comment}}  by {{comment.username}} </p>
     {% endfor %}
 
-      {% else %}
-      <p>does not exist</p>
- {% endif %}
+
 
 
 
