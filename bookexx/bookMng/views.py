@@ -106,7 +106,6 @@ def mybooks(request):
                       })
 
 
-
 def book_detail(request, book_id):
     book = Book.objects.get(id=book_id)
     book.pic_path = book.picture.url[14:]
@@ -165,7 +164,6 @@ def favorites(request):
                       })
 
 
-
 def book_favorite(request, book_id):
     book = Book.objects.get(id=book_id)
     if book.favorite.filter(id=request.user.id).exists():
@@ -204,7 +202,6 @@ def form_valid(self, form):
 
 
 def rate(request, book_id):
-    url = request.META.get('HTTP_REFERER')
     book = Book.objects.get(id=book_id)
     book.pic_path = book.picture.url[14:]
     is_rate = False

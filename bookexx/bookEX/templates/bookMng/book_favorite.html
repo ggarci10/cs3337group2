@@ -11,8 +11,10 @@
     </li>
     {% endfor %}
 {% endblock sidenav %}
-{% if user.is_authenticated %}
+
 {% block content %}
+
+{% if user.is_authenticated %}
 <h1 align="center">  Books added to favorites </h1>
 
       {% else %}
