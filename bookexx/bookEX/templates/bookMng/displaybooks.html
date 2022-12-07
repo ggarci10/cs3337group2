@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}
     Display Book Page
 {% endblock title %}
@@ -14,19 +14,18 @@
 
 {% block content %}
 <h1 align="center"> Display Books Page </h1>
-
-    {% for book in books %}
- <div class="card" style="width: 18rem;">
+<div class="card-columns">
+{% for book in books %}
+ <div class="card m-1" style="display: inline-block; width: 15rem;">
+     <img class="card-img-top" src="{% static book.pic_path %}">
   <div class="card-body">
 	 <p class="card-text">
-      <a href="book_detail/{{ book.id }}" class="stretched-link text-primary" style="position: relative;">  {{ book.name }}</a>
-
-
+      <a href="book_detail/{{ book.id }}" class="stretched-link text-primary">  {{ book.name }}</a>
     </p>
   </div>
 </div>
 
-    {% endfor %}
-
+{% endfor %}
+</div>
 {% endblock content %}
 

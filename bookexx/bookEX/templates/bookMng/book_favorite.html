@@ -15,7 +15,11 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-<h1 align="center">  Books added to favorites </h1>
+ {% if is_favorite %}
+              <h1 align="center">  Books has been deleted from favorites</h1>
+                {% else %}
+               <h1 align="center">  Books added to favorites </h1>
+                {% endif %}
 
       {% else %}
 you are not logged in to see ratings

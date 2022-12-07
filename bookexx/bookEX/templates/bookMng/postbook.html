@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Post Book
+    Display Book Page
 {% endblock title %}
 
 {% block sidenav %}
@@ -13,15 +13,16 @@
 {% endblock sidenav %}
 
 {% block content %}
+<div class="p-1">
 <h1> Post Book Page </h1>
 {% if submitted  %}
 <p>Post Book Successfully</p>
 {% else %}
- <form  action="" enctype="multipart/form-data" method="post" novalidate>
+ <form action="" enctype="multipart/form-data" method="post" novalidate>
     <table>
         {{ form.as_table }}
         <tr>
-            <td colspan="2">
+            <td>
                 <input class="btn btn-primary" type="submit" value="Submit">
             </td>
         </tr>
@@ -29,4 +30,5 @@
      {% csrf_token %}
   </form>
 {% endif %}
+</div>
 {% endblock content %}

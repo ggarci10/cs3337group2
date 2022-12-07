@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Favorites
+    FAV
 {% endblock title %}
 
 {% block sidenav %}
@@ -13,22 +13,24 @@
 {% endblock sidenav %}
 
 {% block content %}
+<div>
 <h1 align="center"> favorite books </h1>
 
 {% if user.is_authenticated %}
- {% for book in books %}
-   <div class="card" style="width: 18rem;">
-  <div class="card-body">
-
-	 <p class="card-text">
-      <a href="http://127.0.0.1:8000/book_detail/{{ book.id }}" class="stretched-link text-primary" style="position: relative;">  {{ book.name }}</a>
-    </p>
-
-  </div>
+<div class="card-columns">
+    {% for book in books %}
+    <div class="card m-2" style="display: inline-block; width: 15rem;">
+        <div class="card-body">
+            <p class="card-text">
+            <a href="http://127.0.0.1:8000/book_detail/{{ book.id }}" class="stretched-link text-primary" >  {{ book.name }}</a>
+            </p>
+        </div>
+    </div>
 </div>
 {% endfor %}
             {% else %}
 you are not logged in to see book favorites
             <a href="{% url 'login' %}?next=/">login</a>
             {% endif %}
+    </div>
 {% endblock content %}
